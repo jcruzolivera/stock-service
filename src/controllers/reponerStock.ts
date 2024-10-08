@@ -1,19 +1,22 @@
 import { Request, Response } from "express";
-import { replenish } from "./../helpers/reponerStock";
+import { replenishArticleStock } from "../services/replenishStock";
 
-// Definimos la estructura del objeto devuelto por replenish
-interface ReplenishResult {
-  success: boolean;
-  msg: any;
+// Define la interfaz para el tipo de datos que esperas en req.body
+interface ReplenishStockRequest extends Request {
+  body: {
+    articleId: string;
+  };
 }
 
-
-export const replenishStock = async (req: Request, res: Response) => {
+export const replenishStock = async (
+  req: ReplenishStockRequest,
+  res: Response
+) => {
   const { articleId } = req.body;
   try {
-    const stock: ReplenishResult = await replenish(articleId);
+    const stock = await replenishArticleStock(articleId as unknown as number);
 
-    if (stock.success) {
+    if (stock) {
       return res.status(200).json(stock);
     }
   } catch (error) {

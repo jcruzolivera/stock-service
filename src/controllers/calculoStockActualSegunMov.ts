@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import Stock from "./../models/stock"; // Ajusta la ruta según tu estructura de archivos
-import MovStock from "./../models/movStock"; // Ajusta la ruta según tu estructura de archivos
+import { calculateStock } from "../services/calculateStock";
 
 export const calculateStockFromMovements = async (
   req: Request,
@@ -9,26 +8,8 @@ export const calculateStockFromMovements = async (
   const { articleId } = req.params;
 
   try {
-    const movements = await MovStock.find({ articleId }).sort({
-      creationDate: 1,
-    });
 
-    //Ver si es necesario tener una valor de stock inicial para asignar a currentStock
-    //y no necesariamente incializarlo en 0
-    let currentStock = 0;
-    movements.forEach((mov) => {
-      if (mov.movType === "INCR") {
-        currentStock += mov.quantity;
-      } else if (mov.movType === "DECR") {
-        currentStock -= mov.quantity;
-      }
-    });
-
-    const stock = await Stock.findOneAndUpdate(
-      { articleId },
-      { currentStock },
-      { new: true }
-    );
+    const stock = await calculateStock(articleId as unknown as number);
 
     return res.status(200).json({ stock });
   } catch (error) {
