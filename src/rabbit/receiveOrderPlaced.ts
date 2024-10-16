@@ -1,4 +1,5 @@
 import amqp from "amqplib";
+import connectDB from "../config/database";
 import { validateArticleStock } from "../services/validateStock.service";
 
 const receiveOrderPlaced = async () => {
@@ -48,6 +49,9 @@ const processOrderAndAdjustStock = async (orderDetails: any) => {
     return { valid: false }; // Retornar validación fallida
   }
 };
+
+// Conectar a MongoDB
+connectDB();
 
 // Llamar a la función para comenzar a recibir mensajes
 receiveOrderPlaced();

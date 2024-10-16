@@ -1,4 +1,5 @@
 import amqp from "amqplib";
+import connectDB from "../config/database";
 
 // Simlucacion base de datos de artículos en microservicio CATALOGO
 const mockDatabase = [
@@ -54,6 +55,9 @@ const processArticleValidation = async (request: any) => {
     return { valid: false, msg: (msg += " no existe.") };
   }
 };
+
+// Conectar a MongoDB
+connectDB();
 
 // Llamar a la función para comenzar a recibir mensajes
 receiveArticleValidation();
