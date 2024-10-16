@@ -1,4 +1,4 @@
-import Stock from './../models/stock';  // Ajusta la ruta según tu estructura de archivos
+import Stock from './../models/stock';
 
 
 export const configureArticleStock = async (articleId: number, currentStock: number, minStock: number, repositionQty: number) => {
@@ -13,6 +13,9 @@ export const configureArticleStock = async (articleId: number, currentStock: num
         stock.repositionQty = repositionQty;
         await stock.save();
       } else {
+        // Si no existe el stock, validar con el servicio de Catalogo que el articleId existe
+        
+
         // Crear nuevo stock
         stock = await Stock.create({
           articleId,

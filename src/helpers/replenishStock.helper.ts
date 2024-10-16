@@ -1,14 +1,15 @@
-import Stock from "./../models/stock"; // Ajusta la ruta según tu estructura de archivos
-import MovStock from "./../models/movStock"; // Ajusta la ruta según tu estructura de archivos
+import Stock from "./../models/stock";
+import MovStock from "./../models/movStock";
 
-
-// Definimos la estructura del objeto devuelto por replenish
+// Interfaz para definir la estructura del objeto devuelto por replenish ()
 interface ReplenishResult {
-    success: boolean;
-    msg: any;
-  }
+  success: boolean;
+  msg: any;
+}
 
-export const replenish = async (articleId: number): Promise<ReplenishResult> => {
+export const replenish = async (
+  articleId: number
+): Promise<ReplenishResult> => {
   try {
     const stock = await Stock.findOne({ articleId });
 
@@ -20,7 +21,16 @@ export const replenish = async (articleId: number): Promise<ReplenishResult> => 
     }
 
     const repositionQty = stock.repositionQty || 0;
+    //Si el stock mínimo no esta definido, debe ser igual a 0
     const minStock = stock.minStock || 0;
+
+    // Si la cantidad a reponer no esta definida o es cero, no reponer stock.
+    if (repositionQty <= 0) {
+      return {
+        msg: "Cantidad de reposición igual a 0. No se puede reponer stock",
+        success: true,
+      };
+    }
 
     // Verificamos si el stock es menor o igual al mínimo configurado
     if (stock.currentStock <= minStock) {

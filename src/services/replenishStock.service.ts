@@ -1,6 +1,6 @@
-import { replenish } from "./../helpers/reponerStock";
+import { replenish } from "./../helpers/replenishStock.helper";
 
-// Definimos la estructura del objeto devuelto por replenish
+// Interfaz para definir la estructura del objeto devuelto por replenish()
 interface ReplenishResult {
   success: boolean;
   msg: any;

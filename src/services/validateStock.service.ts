@@ -1,8 +1,11 @@
-import Stock from "./../models/stock"; // Ajusta la ruta según tu estructura de archivos
-import MovStock from "./../models/movStock"; // Ajusta la ruta según tu estructura de archivos
-import { replenish } from "./../helpers/reponerStock";
+import Stock from "../models/stock";
+import MovStock from "../models/movStock";
+import { replenish } from "./../helpers/replenishStock.helper";
 
-export const validateArticleStock = async (articleId: number, quantity: number) => {
+export const validateArticleStock = async (
+  articleId: number,
+  quantity: number
+) => {
   try {
     const stock = await Stock.findOne({ articleId });
 
@@ -30,10 +33,10 @@ export const validateArticleStock = async (articleId: number, quantity: number) 
 
       return stock;
     } else {
-      return null;
+      return { msg: "No hay suficiente stock para la orden" };
     }
   } catch (error) {
     console.log(error);
-    return null;
+    throw new Error(error as string);
   }
 };

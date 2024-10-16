@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { replenishArticleStock } from "../services/replenishStock";
+import { replenishArticleStock } from "../services/replenishStock.service";
 
-// Define la interfaz para el tipo de datos que esperas en req.body
+// Interfaz para el tipo de datos que se recibe en req.body
 interface ReplenishStockRequest extends Request {
   body: {
     articleId: string;

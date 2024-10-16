@@ -1,6 +1,7 @@
 import express from 'express';
 import connectDB from './config/database';
-import stockRoutes from './routes/stockRoutes';
+import stockRoutes from './routes/stock.routes';
+import authRoutes from './routes/auth.routes';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,7 +18,9 @@ app.use(express.json());
 // Rutas
 app.use('/api/stock', stockRoutes);
 
+app.use('/api/auth', authRoutes);
+
 // Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

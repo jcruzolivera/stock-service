@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { calculateStock } from "../services/calculateStock";
+import { calculateStock } from "../services/calculateStock.service";
 
 export const calculateStockFromMovements = async (
   req: Request,
@@ -8,7 +8,6 @@ export const calculateStockFromMovements = async (
   const { articleId } = req.params;
 
   try {
-
     const stock = await calculateStock(articleId as unknown as number);
 
     return res.status(200).json({ stock });

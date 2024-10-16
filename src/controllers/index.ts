@@ -1,7 +1,13 @@
-import { calculateStockFromMovements } from "./calculoStockActualSegunMov";
-import { configureStock } from "./configurarStockDeArticulo";
-import { getStockByArticleId } from "./consultarStockDeArticulo";
-import { replenishStock } from "./reponerStock";
-import { validateStock } from "./validarStock";
+import { calculateStockFromMovements } from "./calculateStockByMov.controller";
+import { configureStock } from "./configureStock.controller";
+import { getStockByArticleId } from "./getStock.controller";
+import { replenishStock } from "./replenishStock.controller";
+import { validateStock } from "./validateStock.controller";
 
-export { calculateStockFromMovements, configureStock, getStockByArticleId, replenishStock, validateStock };
+export {
+  calculateStockFromMovements,
+  configureStock,
+  getStockByArticleId,
+  replenishStock,
+  validateStock,
+};

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { validateArticleStock } from "../services/validateStock";
+import { validateArticleStock } from "../services/validateStock.service";
 
 export const validateStock = async (req: Request, res: Response) => {
   const { articleId, quantity } = req.body;
 
   try {
-    const stock = validateArticleStock(articleId, quantity);
+    const stock = await validateArticleStock(articleId, quantity);
 
     return res.status(200).json(stock);
   } catch (error) {

@@ -6,7 +6,9 @@ import {
     replenishStock,
     validateStock
 
-} from './../controllers';
+} from '../controllers';
+
+import { checkStockConfig, checkAuth } from '../middlewares';
 
 const router = Router();
 
@@ -14,15 +16,15 @@ const router = Router();
 router.get('/:articleId', getStockByArticleId as any);
 
 //Configurar stock nuevo o existente
-router.post('/', configureStock as any);
+router.post('/', checkAuth, checkStockConfig, configureStock as any);
 
 //Reponer stock de articulo
-router.post('/replenish', replenishStock as any);
+router.post('/replenish', checkAuth, replenishStock as any);
 
 //Validar stock de artículo
-router.post('/validate', validateStock as any);
+router.post('/validate', checkAuth, validateStock as any);
 
 //Calcular stock de articulo por movimientos
-router.get('/calculate/:articleId', calculateStockFromMovements as any);
+router.get('/calculate/:articleId', checkAuth, calculateStockFromMovements as any);
 
 export default router;
