@@ -3,6 +3,12 @@ import MovStock from "../models/movStock";
 
 export const calculateStock = async (articleId: number) => {
   try {
+
+    const stockFound = await Stock.findOne({ articleId });
+
+    if (!stockFound) {
+      return null;
+    }
     const movements = await MovStock.find({ articleId }).sort({
       creationDate: 1,
     });

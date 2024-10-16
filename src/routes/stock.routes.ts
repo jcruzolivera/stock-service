@@ -25,6 +25,6 @@ router.post('/replenish', checkAuth, replenishStock as any);
 router.post('/validate', checkAuth, validateStock as any);
 
 //Calcular stock de articulo por movimientos
-router.get('/calculate/:articleId', checkAuth, calculateStockFromMovements as any);
+router.put('/calculate/:articleId', checkAuth, calculateStockFromMovements as any);
 
 export default router;
