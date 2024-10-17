@@ -12,6 +12,12 @@ export const configureStock = async (req: Request, res: Response) => {
       repositionQty
     );
 
+    if (!stock) {
+      return res
+        .status(200)
+        .json({ message: "ArticleId no encontrado" });
+    }
+
     return res
       .status(200)
       .json({ message: "Stock configurado correctamente", stock });

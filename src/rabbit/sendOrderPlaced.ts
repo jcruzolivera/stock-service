@@ -1,41 +1,45 @@
 import amqp from "amqplib";
-import readline from "readline";
 
-// interfaz de readline para capturar la entrada del usuario
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-const sendOrderPlaced = async (msg: string) => {
+export const sendOrderPlaced = async (msg: string) => {
   try {
     const connection = await amqp.connect("amqp://localhost:5672");
     const channel = await connection.createChannel();
 
-    const queue = "stock_updates";
+    const queue = "stock_updates"; // Cola a la que se envían los pedidos
+    const replyQueue = await channel.assertQueue("", { exclusive: true }); // Cola de respuesta exclusiva para este emisor
 
-    await channel.assertQueue(queue, { durable: false });
+    // Generar un correlationId único para este mensaje
+    const correlationId = generateUuid();
 
-    // Enviar mensaje a la cola
-    channel.sendToQueue(queue, Buffer.from(msg), { persistent: true }); // Mensaje persistente
+    // Escuchar la cola de respuesta para recibir el resultado del proceso
+    channel.consume(
+      replyQueue.queue,
+      (msg) => {
+        if (msg && msg.properties.correlationId === correlationId) {
+          console.log("Respuesta recibida:", msg.content.toString());
+          connection.close(); // Cerrar la conexión una vez recibida la respuesta
+        }
+      },
+      { noAck: true }
+    );
+
+    // Enviar mensaje a la cola de pedidos junto con la información de la cola de respuesta y correlationId
+    channel.sendToQueue(queue, Buffer.from(msg), {
+      correlationId: correlationId,
+      replyTo: replyQueue.queue,
+    });
 
     console.log(`Mensaje enviado: ${msg}`);
-
-    // Cerrar la conexión después de un breve retraso
-    setTimeout(() => {
-      connection.close();
-    }, 500);
   } catch (error) {
     console.error("Error al enviar el mensaje:", error);
   }
 };
 
-// Preguntar al usuario por el articleId y quantity
-rl.question("Ingresa el articleId a validar: ", (articleId) => {
-  rl.question("Ingresa la cantidad de la orden: ", (quantity) => {
-    sendOrderPlaced(
-      '{"articleId": ' + Number(articleId) + ', "quantity": ' + Number(quantity) + "}"
-    );
-    rl.close(); // Cerrar la interfaz de readline
-  });
-});
+// Función auxiliar para generar un UUID
+const generateUuid = () => {
+  return (
+    Math.random().toString() +
+    Math.random().toString() +
+    Math.random().toString()
+  );
+};

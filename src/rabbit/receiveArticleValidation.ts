@@ -1,5 +1,4 @@
 import amqp from "amqplib";
-import connectDB from "../config/database";
 
 // Simlucacion base de datos de artículos en microservicio CATALOGO
 const mockDatabase = [
@@ -7,7 +6,7 @@ const mockDatabase = [
   { id: 67890, name: "Article 2" },
 ];
 
-const receiveArticleValidation = async () => {
+export const receiveArticleValidation = async () => {
   try {
     const connection = await amqp.connect("amqp://localhost:5672");
     const channel = await connection.createChannel();
@@ -17,7 +16,7 @@ const receiveArticleValidation = async () => {
     await channel.assertQueue(queue, { durable: true });
     console.log(`Esperando mensajes en la cola: ${queue}`);
 
-    // Consumiendo mensajes
+    // Consumir mensajes
     await channel.consume(queue, async (msg) => {
       if (msg !== null) {
         const content = msg.content.toString();
@@ -27,7 +26,16 @@ const receiveArticleValidation = async () => {
         const validationRequest = JSON.parse(content);
         const result = await processArticleValidation(validationRequest);
 
-        console.log(result.msg);
+        // Enviar la respuesta a la cola indicada en el mensaje
+        if (msg.properties.replyTo) {
+          channel.sendToQueue(
+            msg.properties.replyTo, // La cola de respuesta
+            Buffer.from(JSON.stringify(result)), // La respuesta en formato JSON
+            {
+              correlationId: msg.properties.correlationId, // Enviar el mismo correlationId
+            }
+          );
+        }
 
         channel.ack(msg); // Confirmar que se ha recibido el mensaje
       }
@@ -44,7 +52,7 @@ const processArticleValidation = async (request: any) => {
 
   // Simulación de validación
   const articleExists = mockDatabase.some((article) => article.id == articleId);
-  let msg = `El articulo con id ${articleId}.`;
+  let msg = `El articulo con id ${articleId}`;
 
   if (articleExists) {
     console.log(`Articulo con id ${articleId} existe.`);
@@ -55,9 +63,3 @@ const processArticleValidation = async (request: any) => {
     return { valid: false, msg: (msg += " no existe.") };
   }
 };
-
-// Conectar a MongoDB
-connectDB();
-
-// Llamar a la función para comenzar a recibir mensajes
-receiveArticleValidation();

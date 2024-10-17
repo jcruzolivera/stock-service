@@ -1,35 +1,57 @@
 import amqp from "amqplib";
-import readline from "readline";
 
-// interfaz de readline para capturar la entrada del usuario
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+// Definir el tipo de retorno de la función sendArticleValidation
+type ValidationResult = { valid: boolean; msg: string };
 
-const sendArticleValidation = async (articleId: string) => {
+// Función que envía la solicitud de validación y espera la respuesta
+export const sendArticleValidation = async (
+  articleId: number
+): Promise<ValidationResult> => {
   try {
     const connection = await amqp.connect("amqp://localhost:5672");
     const channel = await connection.createChannel();
 
-    const queue = "article_validation_queue"; // Cola para validación de artículos
+    const requestQueue = "article_validation_queue";
+    const responseQueue = await channel.assertQueue("", { exclusive: true });
 
-    await channel.assertQueue(queue, { durable: true });
+    const correlationId = generateUuid();
+
+    // Enviar solicitud de validación de artículo
     const message = JSON.stringify({ action: "validate_article", articleId });
-    channel.sendToQueue(queue, Buffer.from(message));
+    channel.sendToQueue(requestQueue, Buffer.from(message), {
+      correlationId: correlationId,
+      replyTo: responseQueue.queue,
+    });
 
-    console.log(`Validando mensaje para el articleId: ${articleId}`);
+    console.log(`Enviando validación para el articleId: ${articleId}`);
 
-    setTimeout(() => {
-      connection.close();
-    }, 500);
+    // Esperar respuesta de la cola
+    return new Promise((resolve, reject) => {
+      channel.consume(
+        responseQueue.queue,
+        (msg) => {
+          if (msg && msg.properties.correlationId === correlationId) {
+            const response = JSON.parse(msg.content.toString());
+            resolve(response);
+            setTimeout(() => {
+              connection.close();
+            }, 500);
+          }
+        },
+        { noAck: true }
+      );
+    });
   } catch (error) {
-    console.error("Error al recibir el mensaje:", error);
+    console.error("Error en la validación del artículo:", error);
+    return { valid: false, msg: `Error procesando la validación.` };
   }
 };
 
-// Preguntar al usuario por el articleId
-rl.question("Ingresa el articleId a validar: ", (articleId) => {
-  sendArticleValidation(articleId);
-  rl.close(); // Cerrar la interfaz de readline
-});
+// Generar un ID único para la correlación
+function generateUuid() {
+  return (
+    Math.random().toString() +
+    Math.random().toString() +
+    Math.random().toString()
+  );
+}
