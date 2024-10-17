@@ -3,8 +3,8 @@ import {
     getStockByArticleId,
     calculateStockFromMovements,
     configureStock,
-    replenishStock,
-    validateStock
+    //replenishStock,
+    //validateStock
 
 } from '../controllers';
 
@@ -19,10 +19,10 @@ router.get('/:articleId', getStockByArticleId as any);
 router.post('/', checkAuth, checkStockConfig, configureStock as any);
 
 //Reponer stock de articulo
-router.post('/replenish', checkAuth, replenishStock as any);
+//router.post('/replenish', checkAuth, replenishStock as any);
 
 //Validar stock de artículo
-router.post('/validate', checkAuth, validateStock as any);
+//router.post('/validate', checkAuth, validateStock as any);
 
 //Calcular stock de articulo por movimientos
 router.put('/calculate/:articleId', checkAuth, calculateStockFromMovements as any);
