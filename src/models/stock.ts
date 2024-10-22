@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IStock extends Document {
-  articleId: number;
+  articleId: string;
   currentStock: number;
   minStock: number;
   repositionQty: number;
@@ -13,7 +13,7 @@ interface IStock extends Document {
 }
 
 const StockSchema: Schema = new Schema({
-  articleId: { type: Number, required: true },
+  articleId: { type: String, required: true },
   currentStock: { type: Number, required: true },
   minStock: { type: Number, required: true },
   repositionQty: { type: Number, required: true },

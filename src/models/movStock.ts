@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IMovStock extends Document {
-  articleId: number;
+  articleId: string;
   movType: 'INCR' | 'DECR'; // Incremento o Decremento
   quantity: number;
   description: string;
@@ -10,7 +10,7 @@ interface IMovStock extends Document {
 }
 
 const MovStockSchema: Schema = new Schema({
-  articleId: { type: Number, required: true },
+  articleId: { type: String, required: true },
   movType: { type: String, enum: ['INCR', 'DECR'], required: true },
   quantity: { type: Number, required: true },
   description: { type: String, required: true },

@@ -1,8 +1,8 @@
 import Stock from "./../models/stock";
-import { sendArticleValidation } from "./../rabbit/sendArticleValidation";
+import getArticleById from "./../rest/getArticleById";
 
 export const configureArticleStock = async (
-  articleId: number,
+  articleId: string,
   currentStock: number,
   minStock: number,
   repositionQty: number
@@ -18,7 +18,7 @@ export const configureArticleStock = async (
       await stock.save();
     } else {
       // Si no existe el stock, validar con el servicio de Catalogo que el articleId existe
-      const result = await sendArticleValidation(articleId);
+      const result = await getArticleById(articleId);
 
       if (!result.valid) {
         console.log(result.msg); // Mostrar mensaje de que el artículo no existe
