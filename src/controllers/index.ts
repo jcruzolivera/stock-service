@@ -1,13 +1,15 @@
-import { calculateStockFromMovements } from "./calculateStockByMov.controller";
+//import { calculateStockFromMovements } from "./calculateStockByMov.controller";
 import { configureStock } from "./configureStock.controller";
 import { getStockByArticleId } from "./getStock.controller";
+import { addStock } from "./addStock.controller";
 //import { replenishStock } from "./replenishStock.controller";
 //import { validateStock } from "./validateStock.controller";
 
 export {
-  calculateStockFromMovements,
+  //calculateStockFromMovements,
   configureStock,
   getStockByArticleId,
+  addStock
   //replenishStock,
   //validateStock,
 };

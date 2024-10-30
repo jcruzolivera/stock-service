@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
     getStockByArticleId,
-    calculateStockFromMovements,
+    addStock,
     configureStock,
     //replenishStock,
     //validateStock
@@ -25,6 +25,6 @@ router.post('/', checkAuth, checkStockConfig, configureStock as any);
 //router.post('/validate', checkAuth, validateStock as any);
 
 //Calcular stock de articulo por movimientos
-router.put('/calculate/:articleId', checkAuth, calculateStockFromMovements as any);
+router.put('/add/:articleId', checkAuth, addStock as any);
 
 export default router;
