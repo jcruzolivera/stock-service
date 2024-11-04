@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { getArticleStock } from "../services/getStock.service";
-import { calculateStock } from "../services/calculateStock.service";
+import { getArticleStock } from "../../services/getStock.service";
+import { calculateStock } from "../../services/calculateStock.service";
 
 export const getStockByArticleId = async (req: Request, res: Response) => {
   const { articleId } = req.params;
