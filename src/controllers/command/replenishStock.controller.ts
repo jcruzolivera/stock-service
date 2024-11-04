@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { replenishArticleStock } from "../services/replenishStock.service";
+import { replenishArticleStock } from "../../services/replenishStock.service";
 
 // Interfaz para el tipo de datos que se recibe en req.body
 interface ReplenishStockRequest extends Request {

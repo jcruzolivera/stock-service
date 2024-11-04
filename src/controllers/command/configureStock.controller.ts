@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { configureArticleStock } from "../services/configureStock.service";
+import { configureArticleStock } from "../../services/configureStock.service";
 
 export const configureStock = async (req: Request, res: Response) => {
   const { articleId, currentStock, minStock, repositionQty } = req.body;

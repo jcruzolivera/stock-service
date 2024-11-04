@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addArticleStock } from "../services/addStock.service";
+import { addArticleStock } from "../../services/addStock.service";
 
 export const addStock = async (req: Request, res: Response) => {
     const { articleId } = req.params;
