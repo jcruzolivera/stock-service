@@ -8,7 +8,7 @@ interface ReplenishResult {
 }
 
 export const replenish = async (
-  articleId: number
+  articleId: string
 ): Promise<ReplenishResult> => {
   try {
     const stock = await Stock.findOne({ articleId });

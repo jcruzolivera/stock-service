@@ -3,12 +3,12 @@ import MovStock from "../models/movStock";
 import { replenish } from "./../helpers/replenishStock.helper";
 
 export const validateArticleStock = async (
-  articleId: number,
+  articleId: string,
   quantity: number
 ) => {
   try {
     const stock = await Stock.findOne({ articleId });
-
+    
     if (!stock) {
       return null;
     }

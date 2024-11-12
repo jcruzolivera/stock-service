@@ -13,7 +13,7 @@ const rl = readline.createInterface({
     rl.question("Ingresa la cantidad de la orden: ", async (quantity) => {
       // Construir el objeto de datos y convertirlo a JSON
       const order = {
-        articleId: Number(articleId),
+        articleId: String(articleId),
         quantity: Number(quantity),
       };
 
