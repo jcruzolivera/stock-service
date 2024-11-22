@@ -6,7 +6,7 @@ interface ReplenishResult {
   msg: any;
 }
 
-export const replenishArticleStock = async (articleId: number) => {
+export const replenishArticleStock = async (articleId: string) => {
   try {
     const stock: ReplenishResult = await replenish(articleId);
 

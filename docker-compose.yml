@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  # Servicio de MongoDB
+  mongo:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017" # Expone MongoDB al host en el puerto 27017
+    volumes:
+      - mongo-data:/data/db # Persistencia de datos en MongoDB
+
+  # Servicio de RabbitMQ
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Puerto estándar de RabbitMQ para conexiones
+      - "15672:15672" # Interfaz de administración
+    environment:
+      RABBITMQ_DEFAULT_USER: admin # Usuario predeterminado
+      RABBITMQ_DEFAULT_PASS: admin # Contraseña predeterminada
+
+  # Tu microservicio
+  stock-service:
+    build:
+      context: . # Construye la imagen usando el Dockerfile del proyecto
+    container_name: stock-service
+    ports:
+      - "5000:5000" # Expone el microservicio en el puerto 5000
+    volumes:
+      - .:/app # Monta tu código fuente para desarrollo en tiempo real
+    environment:
+      # Variables de entorno para la aplicación
+      MONGO_URI: mongodb://mongo:27017/stock
+      RABBITMQ_URI: amqp://admin:admin@rabbitmq:5672
+    depends_on:
+      - mongo
+      - rabbitmq
+
+volumes:
+  mongo-data: # Define el volumen para persistencia de MongoDB

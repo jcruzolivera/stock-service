@@ -3,7 +3,7 @@ import { validateArticleStock } from "../services/validateStock.service";
 
 export const receiveOrderPlaced = async () => {
   try {
-    const connection = await amqp.connect("amqp://localhost:5672");
+    const connection = await amqp.connect("amqp://admin:admin@rabbitmq:5672");
     const channel = await connection.createChannel();
 
     const queue = "stock_updates"; // Cola de RabbitMQ para recibir los pedidos
@@ -46,7 +46,7 @@ export const receiveOrderPlaced = async () => {
 
 // Función que ajusta el stock basado en el mensaje recibido
 const processOrderAndAdjustStock = async (orderDetails: any) => {
-  console.log(`Procesando order para articleId: ${orderDetails.articleId}`);
+  console.log(`Procesando order para articleId : ${orderDetails.articleId}`);
   try {
     // Validar y ajustar el stock del artículo
     await validateArticleStock(orderDetails.articleId, orderDetails.quantity);
